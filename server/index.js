@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const util = require('../helpers/util.js');
 const db = require('../database/index.js');
+const pokemon = require('../helpers/pokemon.js');
 const app = express();
 
 app.use(express.static(path.join(__dirname, '../')));
@@ -68,7 +69,22 @@ app.get('/logout', util.checkUser, (req, res) => {
 	});
 });
 
-app.post('/up', (req, res) => {
+app.get('/pokemon', (req, res) => {
+	let id = Math.floor(Math.random() * 802);
+	
+	pokemon(id)
+	.then((data) => {
+		console.log(data.data.name);
+		console.log(data.data.sprites.front_default);
+		data = JSON.stringify(data.data);
+		res.send(data);
+	})
+	.catch(() => {
+		res.send('ERROR');
+	})
+});
+
+app.post('/up', util.checkUser, (req, res) => {
 	db.scoreUp(req.session.user)
 	.then(() => {
 		res.sendStatus(200);
@@ -78,7 +94,7 @@ app.post('/up', (req, res) => {
 	});
 });
 
-app.post('/down', (req, res) => {
+app.post('/down', util.checkUser, (req, res) => {
 	db.scoreDown(req.session.user)
 	.then(() => {
 		res.sendStatus(200);
@@ -88,7 +104,7 @@ app.post('/down', (req, res) => {
 	});
 });
 
-app.get('/score', (req, res) => {
+app.get('/score', util.checkUser, (req, res) => {
 	db.getScore(req.session.user)
 	.then((users) => {
 		let score = JSON.stringify(users[0].score);

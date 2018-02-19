@@ -8,14 +8,24 @@ class App extends React.Component {
 		let context = this;
 
 		this.state = {
+			pokemon: {
+				name: '',
+				sprites: {
+					front_default: ''
+				}
+			},
 			score: 0,
 			name: ''
 		};
 
-		axios.get('/score')
-		.then((score) => {
-			context.setState({
-				score: score.data
+		axios.get('/pokemon')
+		.then((data) => {
+			axios.get('/score')
+			.then((score) => {
+				context.setState({
+					pokemon: data.data,
+					score: score.data
+				});
 			});
 		})
 		.catch(() => {
@@ -35,10 +45,38 @@ class App extends React.Component {
 	guess(name) {
 		let context = this;
 		
-		axios.post('/up')
+		if (name.toLowerCase() === this.state.pokemon.name.toLowerCase()) {
+			axios.post('/up')
+			.then(() => {
+				axios.get('/pokemon')
+				.then((data) => {
+					context.setState({
+						pokemon: data.data,
+						score: this.state.score + 1,
+						name: ''
+					});					
+				})
+			})
+			.catch(() => {
+				alert('Something went wrong here!');
+			});
+		} else {
+			alert('Try again!');
+		}
+	}
+
+	skip() {
+		let context = this;
+		
+		axios.post('/down')
 		.then(() => {
-			context.setState({
-				score: this.state.score + 1
+			axios.get('/pokemon')
+			.then((data) => {
+				context.setState({
+					pokemon: data.data,
+					score: this.state.score - 1,
+					name: ''
+				});
 			});
 		})
 		.catch(() => {
@@ -49,18 +87,25 @@ class App extends React.Component {
 	render() {
 		return (
 			<div>
+				<img src={this.state.pokemon.sprites.front_default}/>
 				<form>
-					Who's that Pokémon?
+					Who's that Pokémon?<br/>
 					<input
 						type="text"
+						value={this.state.name}
 						onChange={this.change}
 					></input>
 				</form>
 				<button
-					onClick={() => {
-						this.guess(this.state.name);
-					}}
+					onClick={() =>
+						this.guess(this.state.name)
+					}
 				>Guess</button>
+				<button
+					onClick={() =>
+						this.skip()
+					}
+				>Skip</button>
 				<p>Score: {this.state.score}</p>
 				<a href="/logout">Logout</a>
 			</div>
