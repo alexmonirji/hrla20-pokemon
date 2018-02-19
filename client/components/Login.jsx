@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 
 class Login extends React.Component {
 	constructor(props) {
@@ -26,7 +27,16 @@ class Login extends React.Component {
 	}
 
 	login(username, password) {
-
+		axios.post('/login', {
+			username: username,
+			password: password
+		})
+		.then(() => {
+			window.location.href = '/';
+		})
+		.catch(() => {
+			alert('Invalid username or password.');
+		});
 	}
 
 	render() {

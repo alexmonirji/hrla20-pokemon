@@ -8,7 +8,7 @@ class App extends React.Component {
 	render() {
 		return (
 			<div>
-				<p>Hello from App</p>
+				<a href="/logout">Logout</a>
 			</div>
 		);
 	}

@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import Login from './Login.jsx';
 
 class Signup extends React.Component {
 	constructor(props) {
@@ -27,7 +28,18 @@ class Signup extends React.Component {
 	}
 
 	signup(username, password) {
+		const context = this;
 
+		axios.post('/signup', {
+			username: username,
+			password: password
+		})
+		.then(() => {
+			window.location.href = '/login';
+		})
+		.catch((err) => {
+			alert('Username already taken!');
+		});
 	}
 
 	render() {
@@ -43,7 +55,8 @@ class Signup extends React.Component {
 					onClick={() =>
 						this.signup(this.state.username, this.state.password)
 					}
-				>Sign Up</button>
+				>Sign Up</button><br/>
+				<a href="/login">Sign in</a>
 			</div>
 		);
 	}
