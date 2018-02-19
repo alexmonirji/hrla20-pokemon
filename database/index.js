@@ -40,9 +40,22 @@ module.exports = {
 		});
 	},
 	scoreUp: (username) => {
+		return Users.find({ username: username })
+		.then((users) => {
+			let score = users[0].score + 1;
 
+			return Users.update({ username: username }, { score: score });
+		});
 	},
 	scoreDown: (username) => {
+		return Users.find({ username: username })
+		.then((users) => {
+			let score = users[0].score - 1;
 
+			return Users.update({ username: username }, { score: score });
+		});
+	},
+	getScore: (username) => {
+		return Users.find({ username: username });
 	}
 };

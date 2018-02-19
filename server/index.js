@@ -68,6 +68,37 @@ app.get('/logout', util.checkUser, (req, res) => {
 	});
 });
 
+app.post('/up', (req, res) => {
+	db.scoreUp(req.session.user)
+	.then(() => {
+		res.sendStatus(200);
+	})
+	.catch(() => {
+		res.sendStatus(500);
+	});
+});
+
+app.post('/down', (req, res) => {
+	db.scoreDown(req.session.user)
+	.then(() => {
+		res.sendStatus(200);
+	})
+	.catch(() => {
+		res.sendStatus(500);
+	});
+});
+
+app.get('/score', (req, res) => {
+	db.getScore(req.session.user)
+	.then((users) => {
+		let score = JSON.stringify(users[0].score);
+		res.send(score);
+	})
+	.catch(() => {
+		res.sendStatus(500);
+	});
+});
+
 app.listen(3000, () => {
 	console.log('Listening on port 3000.');
 });
