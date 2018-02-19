@@ -1,0 +1,11 @@
+## MAC OSX ##
+.DS_Store
+
+## NPM ##
+node_modules/
+
+## COMPILED ##
+compiled/
+
+## API KEY ##
+config.js
